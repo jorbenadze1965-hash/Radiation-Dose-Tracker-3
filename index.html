@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#071321">
+<title>Radiation Dose Tracker 3 — Personal Risk Assessment</title>
+<style>
+:root{--bg:#071321;--panel:#0e2032;--panel2:#10283c;--line:#24445b;--text:#edf7ff;--muted:#a7bfd0;--cyan:#52e0e2;--gold:#ffcc70;--red:#ff8585;--green:#8fe0b3}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0%,#10334b 0,transparent 32%),var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.wrap{max-width:1120px;margin:auto;padding:26px 18px 48px}.top{display:flex;align-items:center;gap:14px;margin-bottom:22px}.logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#52e0e2,#2b8eaa);display:grid;place-items:center;color:#061522;font-weight:900;font-size:22px}.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.top h1{font-size:clamp(25px,4vw,42px);line-height:1.08;margin:4px 0}.sub{color:var(--muted);margin:7px 0 0}.notice{border:1px solid #6e5a2c;background:#241f17;color:#ffe6b1;padding:13px 15px;border-radius:13px;margin:18px 0 22px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}.card{background:linear-gradient(180deg,rgba(16,40,60,.96),rgba(12,29,45,.96));border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}.span-8{grid-column:span 8}.span-4{grid-column:span 4}.span-6{grid-column:span 6}.span-12{grid-column:span 12}
+h2{font-size:18px;margin:0 0 14px}h3{font-size:14px;margin:0 0 6px;color:var(--muted);font-weight:650}.metric{font-size:clamp(28px,4vw,39px);font-weight:800;letter-spacing:-.04em;line-height:1.15}.unit{font-size:14px;color:var(--muted);font-weight:600;letter-spacing:0}.small{font-size:13px;color:var(--muted)}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.metricbox{padding:15px;border-radius:13px;background:#081927;border:1px solid #1d3c52}
+form .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:13px;color:#c3d6e3;font-weight:650}input,select,textarea{width:100%;border:1px solid #31546b;border-radius:10px;background:#071725;color:var(--text);padding:11px 12px;font:inherit;min-width:0}input:focus,select:focus,textarea:focus{outline:2px solid var(--cyan);outline-offset:1px}button{border:0;border-radius:10px;padding:11px 15px;font:inherit;font-weight:750;cursor:pointer;transition:transform .12s,opacity .12s}button:hover{transform:translateY(-1px)}.primary{background:var(--cyan);color:#05202a}.secondary{background:#18384d;color:var(--text);border:1px solid #31566e}.danger{background:#3b2028;color:#ffd9dc;border:1px solid #713d48}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.bar{height:9px;background:#061522;border-radius:99px;overflow:hidden;margin:12px 0 8px;border:1px solid #25475c}.bar>div{height:100%;width:0;background:linear-gradient(90deg,#52e0e2,#ffcc70);border-radius:99px;transition:width .3s}.status{padding:10px 12px;border-radius:10px;background:#091a28;border:1px solid #24445b;font-size:13px;color:var(--muted)}.status strong{color:var(--text)}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid #234157;white-space:nowrap}th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}td.note{white-space:normal;min-width:140px}.empty{text-align:center;padding:24px;color:var(--muted)}.tag{display:inline-block;border:1px solid #31566e;color:#b9d5e6;border-radius:999px;padding:3px 8px;font-size:11px}.risklist{display:grid;gap:10px}.riskitem{border-left:3px solid var(--cyan);padding:4px 0 4px 12px}.riskitem.warn{border-color:var(--gold)}.riskitem strong{display:block;font-size:14px}.riskitem p{margin:3px 0 0;color:var(--muted);font-size:13px}.footer{color:var(--muted);font-size:12px;text-align:center;margin-top:22px}.link{color:var(--cyan)}.hidden{display:none!important}
+@media(max-width:760px){.span-8,.span-4,.span-6{grid-column:span 12}.metrics{grid-template-columns:1fr}.wrap{padding:18px 12px 34px}.card{padding:16px}.top{align-items:flex-start}.logo{flex:0 0 44px;width:44px;height:44px}}
+@media(max-width:420px){form .fields{grid-template-columns:1fr}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="logo">R3</div>
+  <div><div class="eyebrow">Radiation Safety • Personal Tool</div><h1>Radiation Dose Tracker 3</h1><p class="sub">Personal exposure log &amp; educational risk context</p></div>
+</header>
+<div class="notice"><strong>Important:</strong> This is an educational tracking tool, not a medical device or diagnosis. It does not measure radiation, verify dose readings, or calculate a scientifically validated individual cancer risk. Entered data stays in this browser unless you export it.</div>
+
+<div class="grid">
+<section class="card span-12">
+  <h2>Exposure overview</h2>
+  <div class="metrics">
+    <div class="metricbox"><h3>Total logged dose</h3><div class="metric" id="total">0 <span class="unit">mSv</span></div><div class="small">All saved entries combined</div></div>
+    <div class="metricbox"><h3>This calendar year</h3><div class="metric" id="yearTotal">0 <span class="unit">mSv</span></div><div class="small">Sum of entries dated this year</div></div>
+    <div class="metricbox"><h3>Recorded entries</h3><div class="metric" id="count">0</div><div class="small">Manually entered readings</div></div>
+  </div>
+</section>
+
+<section class="card span-8">
+<h2>Add a dose record</h2>
+<form id="doseForm">
+<div class="fields">
+ <div class="field"><label for="doseDate">Date of exposure / reading</label><input id="doseDate" type="date" required></div>
+ <div class="field"><label for="doseValue">Dose value</label><input id="doseValue" type="number" min="0" step="any" placeholder="e.g. 0.25" required></div>
+ <div class="field"><label for="doseUnit">Unit</label><select id="doseUnit"><option value="uSv">µSv (microsievert)</option><option value="mSv" selected>mSv (millisievert)</option><option value="Sv">Sv (sievert)</option></select></div>
+ <div class="field"><label for="doseType">Record type</label><select id="doseType"><option>Personal dosimeter reading</option><option>Occupational exposure record</option><option>Medical procedure (reported dose)</option><option>Environmental estimate</option><option>Other / uncertain source</option></select></div>
+ <div class="field full"><label for="doseNote">Source / notes (optional)</label><input id="doseNote" maxlength="180" placeholder="e.g. report name, location, uncertainty"></div>
+</div>
+<div class="actions"><button class="primary" type="submit">＋ Add record</button><button class="secondary" type="reset">Reset form</button></div>
+</form>
+</section>
+
+<section class="card span-4">
+<h2>Reference comparison</h2>
+<div class="field"><label for="reference">Your comparison value (mSv/year)</label><input id="reference" type="number" min="0.001" step="any" value="1"></div>
+<p class="small">Set a reference value appropriate to your context. The default 1 mSv/year is shown only as an example of a public-exposure regulatory limit for planned exposure in many frameworks; it is not a universal personal safety threshold and does not include all natural background or medical exposure.</p>
+<div class="bar"><div id="referenceBar"></div></div>
+<div class="status" id="referenceText">Add records to compare your logged calendar-year total with the selected reference.</div>
+</section>
+
+<section class="card span-6">
+<h2>Personal context (optional)</h2>
+<form id="profileForm">
+<div class="fields">
+ <div class="field"><label for="age">Age (years)</label><input id="age" type="number" min="0" max="120" placeholder="e.g. 42"></div>
+ <div class="field"><label for="sex">Sex (for context only)</label><select id="sex"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Another / unspecified</option></select></div>
+ <div class="field"><label for="work">Exposure context</label><select id="work"><option>General public</option><option>Radiation worker</option><option>Medical / patient context</option><option>Emergency / accidental exposure</option></select></div>
+ <div class="field"><label for="smoking">Smoking status (optional)</label><select id="smoking"><option value="">Not provided</option><option>Never</option><option>Former</option><option>Current</option></select></div>
+ <div class="field full"><label for="genetics">Genetic / other notes (optional; avoid entering sensitive details)</label><input id="genetics" maxlength="180" placeholder="Optional note — not used to calculate risk"></div>
+</div>
+<div class="actions"><button class="primary" type="submit">Save profile on this device</button></div>
+</form>
+<p class="small">Age, sex, smoking and genetic information do not produce a validated individual risk estimate in this tool. Profile details are not used to alter dose totals.</p>
+</section>
+
+<section class="card span-6">
+<h2>Educational risk context</h2>
+<div id="riskPanel" class="risklist">
+ <div class="riskitem"><strong>Risk cannot be inferred from a total alone</strong><p>Add a record and review the context notes here. Dose rate, whether exposure was acute or spread over time, radiation type, body area, and measurement uncertainty matter.</p></div>
+</div>
+<div class="status" style="margin-top:12px">If a significant accidental exposure is suspected, seek prompt advice from emergency services or a radiation-safety / medical professional. Do not rely on this tracker to decide whether care is needed.</div>
+</section>
+
+<section class="card span-12">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">Dose history</h2><div class="actions" style="margin:0"><button class="secondary" id="exportBtn" type="button">Export CSV</button><button class="danger" id="clearBtn" type="button">Delete all local data</button></div></div>
+<div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>Date</th><th>Dose</th><th>Type</th><th>Notes</th><th>Action</th></tr></thead><tbody id="records"><tr><td colspan="5" class="empty">No records yet. Add your first entry above.</td></tr></tbody></table></div>
+<p class="small">Data is stored in this browser on this device. Clearing browser data or switching devices may remove or hide your history. Export a CSV backup regularly.</p>
+</section>
+</div>
+<div class="footer">Radiation Dose Tracker 3 • Educational use only • No account or server storage • Version 1.0</div>
+</div>
+<script>
+(() => {
+ const $ = id => document.getElementById(id);
+ const STORAGE_KEY = 'rdt3_records_v1';
+ const PROFILE_KEY = 'rdt3_profile_v1';
+ let records = read(STORAGE_KEY, []);
+ let profile = read(PROFILE_KEY, {});
+ const today = new Date();
+ $('doseDate').value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+ function read(key, fallback){try{const x=JSON.parse(localStorage.getItem(key));return x ?? fallback}catch{return fallback}}
+ function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(records))}
+ function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+ function toMSv(v,u){return u==='uSv'?v/1000:u==='Sv'?v*1000:v}
+ function fmt(v){if(!Number.isFinite(v))return '—';return v.toLocaleString(undefined,{maximumFractionDigits:6,minimumFractionDigits:0})}
+ function yearNow(){return String(new Date().getFullYear())}
+ function sums(){const total=records.reduce((a,r)=>a+r.mSv,0);const y=records.filter(r=>r.date.slice(0,4)===yearNow()).reduce((a,r)=>a+r.mSv,0);return {total,y}}
+ function render(){
+   const {total,y}=sums();
+   $('total').innerHTML=`${fmt(total)} <span class="unit">mSv</span>`;
+   $('yearTotal').innerHTML=`${fmt(y)} <span class="unit">mSv</span>`;
+   $('count').textContent=records.length;
+   const ref=Number($('reference').value);
+   const pct=ref>0?y/ref*100:0;
+   $('referenceBar').style.width=Math.min(100,pct)+'%';
+   $('referenceText').innerHTML=ref>0?`Calendar-year entries: <strong>${fmt(y)} mSv</strong> — ${fmt(pct)}% of the selected reference (${fmt(ref)} mSv/year). This is a comparison, not a diagnosis or proof of safety.`:'Enter a reference value greater than zero.';
+   const body=$('records');
+   if(!records.length){body.innerHTML='<tr><td colspan="5" class="empty">No records yet. Add your first entry above.</td></tr>'}
+   else{body.innerHTML=[...records].sort((a,b)=>b.date.localeCompare(a.date)).map(r=>`<tr><td>${esc(r.date)}</td><td>${fmt(r.original)} ${esc(r.unit)}<br><span class="small">= ${fmt(r.mSv)} mSv</span></td><td>${esc(r.type)}</td><td class="note">${esc(r.note||'—')}</td><td><button class="danger" type="button" data-delete="${esc(r.id)}">Delete</button></td></tr>`).join('')}
+   body.querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>{records=records.filter(r=>r.id!==b.dataset.delete);save();render()}));
+   renderRisk(total,y);
+ }
+ function renderRisk(total,y){
+   const panel=$('riskPanel');
+   let items=[];
+   if(!records.length) items.push(['Risk cannot be inferred from a total alone','Add a record. This tool does not estimate an individual probability of cancer or other disease.','']);
+   else{
+     items.push(['Logged total: '+fmt(total)+' mSv','This is the sum of the values you entered after unit conversion. It may not represent your complete lifetime exposure.','']);
+     items.push(['Timing matters','The same cumulative dose can have different implications depending on whether it was delivered in a short period or spread over years. This log does not reliably determine acute exposure.','']);
+     if(y>0)items.push(['Calendar-year comparison: '+fmt(y)+' mSv','Compare only with a reference appropriate to the exposure category and local regulations. Medical exposure and natural background are treated differently across frameworks.','warn']);
+     items.push(['Individual risk not calculated','A scientifically meaningful assessment may require verified dosimetry, exposure circumstances, radiation type, affected tissues, age at exposure and expert review. Personal profile fields do not change this assessment.','warn']);
+   }
+   panel.innerHTML=items.map(i=>`<div class="riskitem ${i[2]}"><strong>${esc(i[0])}</strong><p>${esc(i[1])}</p></div>`).join('');
+ }
+ $('doseForm').addEventListener('submit',e=>{
+   e.preventDefault();
+   const original=Number($('doseValue').value), unit=$('doseUnit').value, date=$('doseDate').value;
+   if(!date||!Number.isFinite(original)||original<0){alert('Please enter a valid date and non-negative dose value.');return}
+   records.push({id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()),date,original,unit,mSv:toMSv(original,unit),type:$('doseType').value,note:$('doseNote').value.trim()});
+   save();render();$('doseValue').value='';$('doseNote').value='';
+ });
+ $('reference').addEventListener('input',render);
+ $('profileForm').addEventListener('submit',e=>{e.preventDefault();profile={age:$('age').value,sex:$('sex').value,work:$('work').value,smoking:$('smoking').value,genetics:$('genetics').value};localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));alert('Profile saved in this browser. It is not used to calculate individual risk.')});
+ for(const k of ['age','sex','work','smoking','genetics']) if(profile[k]!==undefined)$(k).value=profile[k];
+ $('exportBtn').addEventListener('click',()=>{
+   const rows=[['Date','Dose entered','Unit','Dose_mSv','Record type','Notes'],...records.map(r=>[r.date,r.original,r.unit,r.mSv,r.type,r.note||''])];
+   const csv=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+   const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='radiation-dose-tracker-3.csv';a.click();URL.revokeObjectURL(a.href);
+ });
+ $('clearBtn').addEventListener('click',()=>{if(confirm('Delete all dose records and the saved profile from this browser? This cannot be undone. Export a CSV backup first if needed.')){records=[];profile={};localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(PROFILE_KEY);$('profileForm').reset();render()}});
+ render();
+})();
+</script>
+</body>
+</html>
